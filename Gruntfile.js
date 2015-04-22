@@ -118,7 +118,9 @@ module.exports = function (grunt) {
           src: [
             '.tmp',
             '<%= config.dist %>/*',
-            '!<%= config.dist %>/.git*'
+            '!<%= config.dist %>/.git*',
+            '!<%= config.dist %>/package.json',
+            '!<%= config.dist %>/node_modules'
           ]
         }]
       },
@@ -388,6 +390,20 @@ module.exports = function (grunt) {
         'svgmin'
       ]
     }
+    buildcontrol: {
+      options: {
+          dir: 'dist',
+          commit: true,
+          push: true,
+          message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
+      },
+      heroku: {
+          options: {
+              remote: 'git@heroku.com:healing-one.git',
+              branch: 'master'
+          }
+      }
+    }
   });
 
 
@@ -443,6 +459,11 @@ module.exports = function (grunt) {
     'rev',
     'usemin',
     'htmlmin'
+  ]);
+
+  grunt.registerTask('deploy', [
+    'build',
+    'buildcontrol'
   ]);
 
   grunt.registerTask('default', [
